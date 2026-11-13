@@ -15,6 +15,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-web": "^3.4.6",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"
   },

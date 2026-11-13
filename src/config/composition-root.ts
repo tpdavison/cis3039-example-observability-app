@@ -1,7 +1,23 @@
 import type { ProductDeps } from '../app/product-service';
 import { HttpProductService } from '../infra/http-product-service';
+import { initialiseAppInsights } from './app-insights';
+
+export function initialiseInstrumentation(): void {
+  const apiBaseUrl = resolveProductApiBaseUrl();
+  initialiseAppInsights({
+    connectionString: import.meta.env.VITE_APPINSIGHTS_CONNECTION_STRING,
+    allowedApiHosts: [apiBaseUrl.host],
+  });
+}
 
 export function createProductDeps(): ProductDeps {
+  const baseUrl = resolveProductApiBaseUrl();
+  return {
+    productService: new HttpProductService({ baseUrl: baseUrl.toString() }),
+  };
+}
+
+function resolveProductApiBaseUrl(): URL {
   let baseUrl: URL;
   try {
     // Default to the local Functions host when the setting is absent.
@@ -26,7 +42,5 @@ export function createProductDeps(): ProductDeps {
 
   // Append products to the base path even if the setting omits a final slash.
   baseUrl.pathname = `${baseUrl.pathname.replace(/\/+$/, '')}/`;
-  return {
-    productService: new HttpProductService({ baseUrl: baseUrl.toString() }),
-  };
+  return baseUrl;
 }

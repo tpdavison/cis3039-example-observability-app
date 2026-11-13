@@ -1,10 +1,15 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { PRODUCT_DEPS_KEY } from './composables/products-key';
-import { createProductDeps } from './config/composition-root';
+import {
+  createProductDeps,
+  initialiseInstrumentation,
+} from './config/composition-root';
 import router from './router';
 
 try {
+  initialiseInstrumentation();
+
   const app = createApp(App);
   app.provide(PRODUCT_DEPS_KEY, createProductDeps());
   app.use(router);
